@@ -25,11 +25,11 @@ class BaseContributionMap:
         }
         self.colors = {
             "light": {
-                0: "#EBEDF0",
-                1: "#9BE9A8",
-                2: "#40C463",
-                3: "#30A14E",
-                4: "#216E39"
+                0: "#eff2f5",
+                1: "#aceebb",
+                2: "#4ac26b",
+                3: "#2da44e",
+                4: "#116329"
             },
             "dark": {
                 0: "#151b23",
