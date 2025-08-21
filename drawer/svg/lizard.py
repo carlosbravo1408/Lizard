@@ -1,14 +1,14 @@
 import math
-from typing import List
 
 import svgwrite
 from svgwrite import animate
 
 from creatures import Lizard as BaseLizard
+from .base_drawer import BaseDrawer
 from physics import Vector
 
 
-class Lizard(BaseLizard):
+class Lizard(BaseLizard, BaseDrawer):
     def __init__(
             self,
             origin: Vector,
@@ -16,14 +16,10 @@ class Lizard(BaseLizard):
             color: str = "#03ac13"
     ) -> None:
         super().__init__(origin, scale)
-        self._frames: List[dict] = []
-        self._fps = 60
+        BaseDrawer.__init__(self)
+        self._draw_group_name = "lizard"
         self._background_color = "#1e1e1e"
         self._body_color = color
-
-    def start_recording(self, fps: int = 60) -> None:
-        self._frames = []
-        self._fps = fps
 
     def record_frame(self) -> None:
         body_path = []
@@ -49,20 +45,12 @@ class Lizard(BaseLizard):
             "head": (self.spine.joints[0].x, self.spine.joints[0].y)
         })
 
-    def to_group(self, dwg: svgwrite.Drawing) -> svgwrite.Drawing:
-        if not self._frames:
-            raise RuntimeError("There is no frames to save")
-
-        n_frames = len(self._frames)
-        duration = n_frames / self._fps
-
-        if n_frames == 1:
-            key_times = ["0", "1"]
-        else:
-            key_times = [f"{i / (n_frames - 1):.6f}" for i in range(n_frames)]
-        key_times_str = ";".join(key_times)
-
-        lizard_group = dwg.g(id=f"lizard-{self._id}")
+    def to_group(
+            self,
+            dwg: svgwrite.Drawing,
+            frame_skip:int = 1
+    ) -> svgwrite.Drawing:
+        lizard_group = super().to_group(dwg, frame_skip)
 
         g_body = lizard_group.add(dwg.g(
             fill=self._body_color,
@@ -83,10 +71,10 @@ class Lizard(BaseLizard):
             stroke_linecap="round"
         ))
 
-        for poly_idx in range(len(self._frames[0]["body"])):
+        for poly_idx in range(len(self._frames_to_use[0]["body"])):
             values = []
-            for f in range(n_frames):
-                pts = self._frames[f]["body"][poly_idx]
+            for f in range(self._n_frames):
+                pts = self._frames_to_use[f]["body"][poly_idx]
                 path_d = f"M{pts[0][0]:.2f},{pts[0][1]:.2f} "
                 path_d += " ".join(f"L{x:.2f},{y:.2f}" for x, y in pts[1:])
                 path_d += " Z"
@@ -94,9 +82,9 @@ class Lizard(BaseLizard):
             path = dwg.path(d=values[0])
             path.add(animate.Animate(
                 "d",
-                dur=f"{duration}s",
+                dur=f"{self._duration:.2f}s",
                 values=";".join(values),
-                keyTimes=key_times_str,
+                keyTimes=self._key_times_str,
                 fill="freeze",
                 repeatCount="indefinite"
             ))
@@ -104,33 +92,33 @@ class Lizard(BaseLizard):
 
         for arm_idx in range(4):
             values = []
-            for f in range(n_frames):
-                pts = self._frames[f]["arms"][arm_idx]
+            for f in range(self._n_frames):
+                pts = self._frames_to_use[f]["arms"][arm_idx]
                 path_d = f"M{pts[0][0]:.2f},{pts[0][1]:.2f} "
                 path_d += " ".join(f"L{x:.2f},{y:.2f}" for x, y in pts[1:])
                 values.append(path_d)
             path = dwg.path(d=values[0])
             path.add(animate.Animate(
                 "d",
-                dur=f"{duration}s",
+                dur=f"{self._duration:.2f}s",
                 values=";".join(values),
-                keyTimes=key_times_str,
+                keyTimes=self._key_times_str,
                 fill="freeze",
                 repeatCount="indefinite"
             ))
             g_arms.add(path)
 
         values = []
-        for f in range(n_frames):
-            x, y = self._frames[f]["head"]
+        for f in range(self._n_frames):
+            x, y = self._frames_to_use[f]["head"]
             path_d = f"M{x:.2f},{y:.2f} L{x:.2f},{y:.2f}"
             values.append(path_d)
         head_path = dwg.path(d=values[0])
         head_path.add(animate.Animate(
             "d",
-            dur=f"{duration}s",
+            dur=f"{self._duration:.2f}s",
             values=";".join(values),
-            keyTimes=key_times_str,
+            keyTimes=self._key_times_str,
             fill="freeze",
             repeatCount="indefinite"
         ))

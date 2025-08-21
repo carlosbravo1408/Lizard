@@ -1,6 +1,4 @@
 import math
-import secrets
-import string
 from typing import List
 
 from physics import Vector, Chain
@@ -12,10 +10,6 @@ class BaseCreature:
 
     def __init__(self, origin: Vector, scale: float = 1.0) -> None:
         self.scale = scale
-        self._id = ''.join(
-            secrets.choice(string.ascii_letters + string.digits)
-            for _ in range(5)
-        )
 
     def resolve(self, pos: Vector) -> None:
         self.spine.resolve(pos)
