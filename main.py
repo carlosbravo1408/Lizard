@@ -1,6 +1,6 @@
 import sys
 
-from drawer.svg import ContributionGameSVG
+from drawer.svg.contribution_game_svg import ContributionGameSVG
 
 
 def main():
