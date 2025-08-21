@@ -78,7 +78,7 @@ class ContributionGameSVG:
         self._current_bug = self.get_next_target()
         self._current_target = self._lizard.spine.joints[0].copy()
         dwg = svgwrite.Drawing(
-            f"contribution_map_animation_{self._map.theme}.svg",
+            f"./dist/contribution_map_animation_{self._map.theme}.svg",
             size=(self._map.width, self._map.height)
         )
         dwg.add(
