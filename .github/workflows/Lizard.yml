@@ -36,7 +36,8 @@ jobs:
       - name: Generate contribution SVGs
         run: |
           mkdir -p dist
-          python main.py --user_name "${{ github.repository_owner }}" --token "${{ secrets.GITHUB_TOKEN }}"
+          ls
+          python main.py "${{ github.repository_owner }}" "${{ secrets.GITHUB_TOKEN }}"
 
       # Push the generated SVGs to output branch
       - name: Publish SVGs to output branch
