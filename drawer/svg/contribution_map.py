@@ -39,7 +39,7 @@ class ContributionMap(BaseContributionMap):
             }
         self.add_bug_symbol(dwg)
 
-    def set_day_with_contribution(
+    def remove_day(
             self,
             target: DailyContribution,
             elapsed_time: float
@@ -65,7 +65,7 @@ class ContributionMap(BaseContributionMap):
                     values=f"{color1};{color1};{color2};{color2}",
                     keyTimes=f"0;{transition};{transition};1",
                     begin="0s",
-                    dur=f"{total_elapsed_time}s",
+                    dur=f"{total_elapsed_time:.3f}s",
                     fill="freeze",
                     repeatCount="indefinite"
                 )
@@ -106,10 +106,10 @@ class ContributionMap(BaseContributionMap):
         t2 = hide_time / total_duration
         t3 = 1.0
         values = "0;1;0;0"
-        key_times_str = f"{t0:.6f};{t1:.6f};{t2:.6f};{t3:.6f}"
+        key_times_str = f"{t0:.3f};{t1:.3f};{t2:.3f};{t3:.3f}"
         use.add(animate.Animate(
             attributeName="opacity",
-            dur=f"{total_duration}s",
+            dur=f"{total_duration:.3f}s",
             values=values,
             keyTimes=key_times_str,
             fill="freeze",

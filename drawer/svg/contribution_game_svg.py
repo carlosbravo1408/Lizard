@@ -33,9 +33,9 @@ class ContributionGameSVG:
             color=self.get_lizard_color(theme)
             if lizard_color is None else lizard_color,
         )
-        self._current_bug = None
+        self._current_day = None
         self._running = True
-        self._fps = 60
+        self._fps = 30
         self._targets = copy.deepcopy(self._map.targets)
         self._lizard.start_recording(fps=self._fps)
         self._tpf = 1.0 / self._fps  # time per frame
@@ -52,12 +52,12 @@ class ContributionGameSVG:
             (abs(item.week_number - tx) + abs(item.day_number - ty))
         ))
 
-    def get_next_target(self) -> DailyContribution:
+    def get_next_contribution_day(self) -> DailyContribution:
         cell = self._map.vector2cell(self._lizard.spine.joints[0].copy())
         self.sort_contributions(cell)
         return self._targets.pop(0)
 
-    def has_enough_bugs(self) -> bool:
+    def has_enough_contributions(self) -> bool:
         return len(self._targets) > 0
 
     def move_lizard_to_target(self, target_pos) -> bool:
@@ -75,7 +75,7 @@ class ContributionGameSVG:
 
     def run(self) -> None:
         t = 0
-        self._current_bug = self.get_next_target()
+        self._current_day = self.get_next_contribution_day()
         self._current_target = self._lizard.spine.joints[0].copy()
         dwg = svgwrite.Drawing(
             f"./dist/contribution_map_animation_{self._map.theme}.svg",
@@ -91,26 +91,27 @@ class ContributionGameSVG:
         self._lizard.start_recording(fps=self._fps)
         self._running = True
         self._map.start_background(dwg)
-        self._map.set_day_with_contribution(self._current_bug, self._tpf)
+        self._map.remove_day(self._current_day, self._tpf)
         while self._running:
-            if self.has_enough_bugs() and self._current_bug is None:
-                self._current_bug = self.get_next_target()
-                self._map.set_day_with_contribution(self._current_bug,
-                                                    t * self._tpf)
-            if self._current_bug is not None:
-                bx = self._current_bug.week_number
-                by = self._current_bug.day_number
+            if self.has_enough_contributions() and self._current_day is None:
+                self._current_day = self.get_next_contribution_day()
+                self._map.remove_day(self._current_day, t * self._tpf)
+            if self._current_day is not None:
+                bx = self._current_day.week_number
+                by = self._current_day.day_number
                 target_px, target_py = self._map.cell_center(bx, by)
-            if not self.has_enough_bugs() and self._current_bug is None:
+            if not self.has_enough_contributions() \
+                    and self._current_day is None:
                 target_px, target_py = self._width + 300, self._height // 2
             if self.move_lizard_to_target(Vector(target_px, target_py)):
-                if not self.has_enough_bugs() and self._current_bug is None:
+                if not self.has_enough_contributions() \
+                        and self._current_day is None:
                     self._running = False
 
-                self._current_bug = None
+                self._current_day = None
             self._lizard.record_frame()
             t += 1
 
         dwg.add(self._map.to_group(dwg, t * self._tpf))
-        dwg.add(self._lizard.to_group(dwg))
+        dwg.add(self._lizard.to_group(dwg, 3))
         dwg.save()
