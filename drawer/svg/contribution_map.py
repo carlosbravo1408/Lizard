@@ -28,7 +28,9 @@ class ContributionMap(BaseContributionMap):
                 size=(self._cell, self._cell),
                 fill=self.colors[self.theme][day.quartile],
                 id=f"cell-{col}-{row}",
-                opacity=1
+                opacity=1,
+                rx=4,
+                ry=4
             )
             self._cells_dict[(col, row)] = {
                 "rect": rect,

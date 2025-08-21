@@ -11,7 +11,7 @@ class BaseContributionMap:
         self._cols = 55
         self._rows = 9
         self._cell = 24
-        self._gap = 4
+        self._gap = 8
         self._pad = 16
         self._step = self._cell + self._gap
         self._width = self._pad * 2 + self._cols * self._step - self._gap
