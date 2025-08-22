@@ -10,36 +10,22 @@ on:
 
 jobs:
   generate:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
     steps:
-      # Checkout the repository
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v3
 
-      # Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Generate lizard
+        uses: carlosbravo1408/Lizard/.github/actions/action.yml@v1
         with:
-          python-version: 3.11
+          user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/contribution_map_animation_light.svg
+            dist/contribution_map_animation_dark.svg
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Install dependencies
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      # Generate SVGs for light and dark themes
-      - name: Generate contribution SVGs
-        run: |
-          mkdir -p dist
-          python main.py "${{ github.repository_owner }}" "${{ secrets.GITHUB_TOKEN }}"
-
-      # Push the generated SVGs to output branch
-      - name: Publish SVGs to output branch
+      - name: Commit and push SVG
         uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
           target_branch: output
