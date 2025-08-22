@@ -19,11 +19,10 @@ jobs:
         uses: carlosbravo1408/Lizard/.github/actions/action.yml@v1
         with:
           user_name: ${{ github.repository_owner }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           outputs: |
             dist/contribution_map_animation_light.svg
             dist/contribution_map_animation_dark.svg
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit and push SVG
         uses: crazy-max/ghaction-github-pages@v3.1.0
