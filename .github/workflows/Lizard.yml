@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Generate lizard
-        uses: carlosbravo1408/Lizard/.github/actions/action.yml@v1
+        uses: carlosbravo1408/Lizard/.github/actions/action.yml
         with:
           user_name: ${{ github.repository_owner }}
           token: ${{ secrets.GITHUB_TOKEN }}
