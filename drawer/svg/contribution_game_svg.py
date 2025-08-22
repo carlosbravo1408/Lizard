@@ -75,7 +75,6 @@ class ContributionGameSVG:
 
     def run(self) -> None:
         t = 0
-        self._current_day = self.get_next_contribution_day()
         self._current_target = self._lizard.spine.joints[0].copy()
         dwg = svgwrite.Drawing(
             f"./dist/contribution_map_animation_{self._map.theme}.svg",
@@ -91,7 +90,9 @@ class ContributionGameSVG:
         self._lizard.start_recording(fps=self._fps)
         self._running = True
         self._map.start_background(dwg)
-        self._map.remove_day(self._current_day, self._tpf)
+        if self.has_enough_contributions():
+            self._current_day = self.get_next_contribution_day()
+            self._map.remove_day(self._current_day, self._tpf)
         while self._running:
             if self.has_enough_contributions() and self._current_day is None:
                 self._current_day = self.get_next_contribution_day()

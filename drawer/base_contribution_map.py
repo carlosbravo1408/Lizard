@@ -61,13 +61,3 @@ class BaseContributionMap:
     @property
     def height(self) -> float:
         return self._height
-
-    def sort_contributions(
-            self,
-            target_cell: Tuple[int, int]
-    ) -> List[DailyContribution]:
-        tx, ty = target_cell
-        return sorted(self.targets, key=lambda item: (
-            -item.contributions,
-            -(abs(item.week_number - tx) + abs(item.day_number - ty))
-        ))
