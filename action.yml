@@ -9,8 +9,6 @@ inputs:
   token:
     description: "GitHub token"
     required: true
-outputs:
-  required: false
 
 runs:
   using: "composite"
