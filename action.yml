@@ -8,8 +8,7 @@ inputs:
     required: true
   token:
     description: "GitHub token"
-    required: false
-    default: ${{ github.token }}
+    required: true
 outputs:
   required: false
 
@@ -28,5 +27,5 @@ runs:
     - name: Run script
       run: |
         mkdir -p dist
-        python main.py "${{ inputs.user_name }}" "${{ inputs.token  }}"
+        python main.py "${{ inputs.user_name }}" "${{ inputs.token }}"
       shell: bash
