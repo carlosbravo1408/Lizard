@@ -19,11 +19,11 @@ runs:
         python-version: "3.11"
 
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: pip install -r ${{ github.action_path }}/requirements.txt
       shell: bash
 
     - name: Run script
       run: |
         mkdir -p dist
-        python main.py "${{ inputs.user_name }}" "${{ inputs.token }}"
+        python ${{ github.action_path }}/main.py "${{ inputs.user_name }}" "${{ inputs.token }}"
       shell: bash
