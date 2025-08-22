@@ -2,7 +2,7 @@ name: generate contribution SVGs
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # cada 24 horas a medianoche
+    - cron: "0 0 * * *"  # each 24 hours
   workflow_dispatch:
   push:
     branches:
@@ -36,7 +36,6 @@ jobs:
       - name: Generate contribution SVGs
         run: |
           mkdir -p dist
-          ls
           python main.py "${{ github.repository_owner }}" "${{ secrets.GITHUB_TOKEN }}"
 
       # Push the generated SVGs to output branch

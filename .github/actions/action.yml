@@ -1,0 +1,30 @@
+name: "Lizard Contribution Generator"
+author: "Carlos Bravo"
+description: "Spawns a lizard that devours insects that appear in your contribution graph."
+
+inputs:
+  user_name:
+    description: "Github Username"
+    required: true
+  token:
+    description: "GitHub token"
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+      shell: bash
+
+    - name: Run script
+      run: |
+        mkdir -p dist
+        python main.py "${{ inputs.user_name }}" "${{ inputs.token  }}"
+      shell: bash
